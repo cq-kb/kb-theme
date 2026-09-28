@@ -1,0 +1,52 @@
+# push 到 main 后：跑测试 → 构建主题 → 把产物同步到服务器的 Halo 主题目录 → 重载。
+# 需要与 kb-deploy 相同的三个 Secrets：DEPLOY_HOST / DEPLOY_USER / DEPLOY_KEY
+name: Build & deploy theme
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-theme
+  cancel-in-progress: true
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm build-only
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Sync theme to server
+        # Halo 只需要这几样：theme.yaml / settings.yaml / templates/ / i18n/
+        run: |
+          rsync -avz --delete \
+            --include 'theme.yaml' --include 'settings.yaml' \
+            --include 'templates/***' --include 'i18n/***' \
+            --exclude '*' \
+            ./ "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/opt/kb-deploy/data/halo2/themes/kb-theme/"
+
+      - name: Reload theme in Halo
+        # v1：重启 Halo 容器让它重新扫描主题目录（约 30–60 秒不可用）。
+        # 以后可换成 Halo 的 reload 接口 + 个人令牌，做到零停机。
+        run: |
+          ssh "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" '
+            cd /opt/kb-deploy && docker compose restart halo
+          '
