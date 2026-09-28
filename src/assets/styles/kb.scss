@@ -1,0 +1,171 @@
+/* 知识库条目样式（配合 assets/kb/entries.ts） */
+
+.kb-entry {
+  scroll-margin-top: 5rem;
+  margin: 1.75rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgb(229 231 235);
+  border-radius: 0.75rem;
+  background: rgb(255 255 255);
+
+  .dark & {
+    border-color: rgb(51 65 85);
+    background: rgb(30 41 59);
+  }
+
+  .kb-entry-title {
+    margin-top: 0 !important;
+    font-size: 1.15rem;
+  }
+}
+
+/* 成本标签徽章 */
+.kb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0.9rem;
+}
+
+.kb-tag {
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  line-height: 1.5rem;
+  border: 1px solid transparent;
+
+  .kb-tag-k {
+    padding: 0 0.55rem;
+    background: rgb(0 0 0 / 0.06);
+    font-weight: 600;
+    .dark & {
+      background: rgb(255 255 255 / 0.08);
+    }
+  }
+  .kb-tag-v {
+    padding: 0 0.6rem;
+  }
+
+  /* 成本：越少越绿 */
+  &.kb-lv-none { color: rgb(21 128 61); background: rgb(220 252 231); border-color: rgb(187 247 208); }
+  &.kb-lv-low  { color: rgb(21 128 61); background: rgb(240 253 244); border-color: rgb(187 247 208); }
+  &.kb-lv-mid  { color: rgb(180 83 9);  background: rgb(255 251 235); border-color: rgb(253 230 138); }
+  &.kb-lv-high { color: rgb(185 28 28); background: rgb(254 242 242); border-color: rgb(254 202 202); }
+  &.kb-lv-info { color: rgb(55 65 81);  background: rgb(243 244 246); border-color: rgb(229 231 235); }
+
+  /* 收益：越大越绿（反向） */
+  &.kb-inverted.kb-lv-high { color: rgb(21 128 61); background: rgb(220 252 231); border-color: rgb(187 247 208); }
+  &.kb-inverted.kb-lv-low  { color: rgb(180 83 9);  background: rgb(255 251 235); border-color: rgb(253 230 138); }
+  &.kb-inverted.kb-lv-none { color: rgb(107 114 128); background: rgb(243 244 246); border-color: rgb(229 231 235); }
+
+  .dark & {
+    filter: saturate(0.85) brightness(0.9);
+  }
+}
+
+/* 字段列表 */
+.kb-fields {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin: 0 !important;
+
+  > li {
+    position: relative;
+    padding-left: 4.5rem !important;
+    margin: 0.35rem 0 !important;
+  }
+
+  .kb-field-label {
+    position: absolute;
+    left: 0;
+    top: 0.15rem;
+    width: 4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgb(107 114 128);
+    .dark & { color: rgb(148 163 184); }
+  }
+
+  .kb-field-plain {
+    padding: 0.5rem 0.75rem 0.5rem 4.5rem !important;
+    border-left: 3px solid rgb(59 130 246);
+    background: rgb(239 246 255);
+    border-radius: 0.375rem;
+    .dark & { background: rgb(30 58 138 / 0.25); }
+    .kb-field-label { left: 0.75rem; top: 0.6rem; color: rgb(37 99 235); }
+  }
+
+  .kb-field-source,
+  .kb-field-note {
+    font-size: 0.85rem;
+    color: rgb(107 114 128);
+    .dark & { color: rgb(148 163 184); }
+    a { word-break: break-all; }
+  }
+}
+
+/* 证据等级 */
+.kb-evidence {
+  display: inline-block;
+  min-width: 1.6rem;
+  padding: 0 0.4rem;
+  border-radius: 0.375rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  line-height: 1.5rem;
+  color: #fff;
+
+  &.kb-evidence-a { background: rgb(22 163 74); }
+  &.kb-evidence-b { background: rgb(217 119 6); }
+  &.kb-evidence-c { background: rgb(107 114 128); }
+}
+
+/* 顶部筛选条 */
+.kb-filter {
+  position: sticky;
+  top: 4rem;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  background: rgb(249 250 251);
+  border: 1px solid rgb(229 231 235);
+  font-size: 0.8rem;
+
+  .dark & { background: rgb(15 23 42); border-color: rgb(51 65 85); }
+
+  .kb-filter-label { color: rgb(107 114 128); margin-right: 0.25rem; }
+
+  .kb-filter-btn {
+    padding: 0.15rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid rgb(209 213 219);
+    background: #fff;
+    cursor: pointer;
+    small { opacity: 0.6; }
+    &.is-active { background: rgb(17 24 39); color: #fff; border-color: rgb(17 24 39); }
+    .dark & { background: rgb(30 41 59); border-color: rgb(71 85 105); color: rgb(226 232 240); }
+    .dark &.is-active { background: rgb(226 232 240); color: rgb(15 23 42); }
+  }
+
+  .kb-filter-toggle {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+/* 只看「说人话」模式：隐藏其他字段 */
+.kb-plain-only .kb-fields > li:not(.kb-field-plain) {
+  display: none;
+}

@@ -1,0 +1,44 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vp build --watch",
+    "build": "pnpm run build-only && pnpm package",
+    "build-only": "vp build",
+    "check": "vp check --fix",
+    "package": "theme-package",
+    "prepare": "vp config",
+    "test": "vp test run"
+  },
+  "dependencies": {
+    "@halo-dev/api-client": "^2.23.0",
+    "alpinejs": "^3.15.9",
+    "overlayscrollbars": "^2.14.0",
+    "pupa": "^3.3.0",
+    "tocbot": "^4.36.4"
+  },
+  "devDependencies": {
+    "@halo-dev/theme-package-cli": "^1.1.1",
+    "@halo-dev/vite-plugin-halo-theme": "^1.0.3",
+    "@iconify-json/bx": "^1.2.3",
+    "@iconify-json/gg": "^1.2.2",
+    "@iconify-json/simple-icons": "^1.2.75",
+    "@iconify-json/tabler": "^1.2.32",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/alpinejs": "^3.13.11",
+    "@types/markdown-it": "^14.2.0",
+    "@types/node": "24.12.0",
+    "autoprefixer": "^10.4.27",
+    "happy-dom": "^20.14.5",
+    "markdown-it": "^15.0.2",
+    "postcss": "^8.5.8",
+    "sass-embedded": "^1.98.0",
+    "tailwindcss": "^3.4.19",
+    "tailwindcss-plugin-icons": "^2.2.2",
+    "typescript": "^5.9.3",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "packageManager": "pnpm@12.4.2"
+}

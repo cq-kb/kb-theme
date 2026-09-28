@@ -1,0 +1,21 @@
+apiVersion: theme.halo.run/v1alpha1
+kind: Theme
+metadata:
+  name: kb-theme
+spec:
+  displayName: KB（知识库）
+  author:
+    name: Cq-study
+    website: https://kb.cqian.top
+  description: 基于 Halo 官方 Earth 主题定制的个人知识库主题：条目徽章、证据等级、筛选
+  logo: /themes/kb-theme/assets/images/default-avatar.svg
+  homepage: https://github.com/Cq-study/kb-theme
+  repo: https://github.com/Cq-study/kb-theme
+  issues: https://github.com/Cq-study/kb-theme/issues
+  settingName: "kb-theme-setting"
+  configMapName: "kb-theme-configMap"
+  version: 0.1.0
+  requires: ">=2.22.0"
+  license:
+    - name: "GPL-3.0"
+      url: "https://github.com/Cq-study/kb-theme/blob/main/LICENSE"

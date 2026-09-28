@@ -1,0 +1,22 @@
+<th:block th:if="${theme.config.plugin.docsme.source == 'plugin'}">
+  <th:block th:replace="~{plugin:plugin-docsme:doc-catalog}" />
+</th:block>
+
+<th:block th:if="${theme.config.plugin.docsme.source == 'theme'}">
+  <include src="doc-layout.html">
+    <template name="head">
+      <title th:text="|${site.title}|"></title>
+      <th:block th:replace="~{plugin:plugin-docsme:modules/style}" />
+      <script
+        th:src="@{/plugins/plugin-docsme/assets/static/dist/main.iife.js?v={version}(version=${plugin.version})}"
+        defer
+      ></script>
+      <th:block th:replace="~{plugin:plugin-docsme:modules/plugin-scripts}" />
+      <script type="module" src="./assets/doc.ts"></script>
+    </template>
+    <div class="dm-container">
+      <th:block th:replace="~{plugin:plugin-docsme:modules/header :: header (showThemeSwitcher = false)}" />
+      <th:block th:replace="~{plugin:plugin-docsme:modules/doc-catalog :: doc-catalog (footer = null)}" />
+    </div>
+  </include>
+</th:block>
