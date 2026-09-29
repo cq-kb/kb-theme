@@ -1,6 +1,13 @@
 <include src="layout.html">
   <template name="head">
     <title th:text="${site.title}"></title>
+    <!-- 首页分享卡片：kb-theme 新增 -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" th:content="${site.title}" />
+    <meta property="og:title" th:content="${site.title}" />
+    <meta property="og:description" th:content="${site.subtitle}" />
+    <meta property="og:url" th:content="${site.url}" />
+    <meta property="og:image" th:unless="${#strings.isEmpty(site.logo)}" th:content="${site.logo}" />
   </template>
   <template name="hero">
     <th:block th:replace="~{modules/hero :: hero(isHome = true, cover = null, title = null)}" />

@@ -1,6 +1,20 @@
 <include src="layout.html">
   <template name="head">
     <title th:text="|${post.spec.title} - ${site.title}|"></title>
+    <!-- 分享卡片（微信 / 微博 / 知乎 / Twitter 抓取）：kb-theme 新增 -->
+    <th:block th:with="ogImage = ${#strings.isEmpty(post.spec.cover)} ? ${site.logo} : ${post.spec.cover}">
+      <meta property="og:type" content="article" />
+      <meta property="og:site_name" th:content="${site.title}" />
+      <meta property="og:title" th:content="${post.spec.title}" />
+      <meta property="og:description" th:content="${post.status.excerpt}" />
+      <meta property="og:url" th:content="${post.status.permalink}" />
+      <meta property="og:image" th:unless="${#strings.isEmpty(ogImage)}" th:content="${ogImage}" />
+      <meta property="article:published_time" th:content="${post.spec.publishTime}" />
+      <meta name="twitter:card" th:content="${#strings.isEmpty(post.spec.cover)} ? 'summary' : 'summary_large_image'" />
+      <meta name="twitter:title" th:content="${post.spec.title}" />
+      <meta name="twitter:description" th:content="${post.status.excerpt}" />
+      <meta name="twitter:image" th:unless="${#strings.isEmpty(ogImage)}" th:content="${ogImage}" />
+    </th:block>
     <script type="module" src="./assets/post.ts"></script>
     <script type="module">
       import { generateToc } from "./assets/utils/toc.ts";
