@@ -6,10 +6,9 @@
     <th:block th:replace="~{modules/hero :: hero(isHome = true, cover = null, title = null)}" />
   </template>
   <section class="mx-auto mt-6 grid max-w-7xl grid-cols-1 gap-6 px-4 md:grid-cols-[1fr_18rem] lg:px-6">
-    <div
-      class="z-0 min-w-0"
-      th:with="chapterNo=${#strings.substringBefore(category.spec.displayName, '.')}, isChapter=${not #strings.equals(chapterNo, category.spec.displayName) and #strings.length(chapterNo) gt 0 and #strings.length(chapterNo) le 2}"
-    >
+    <!-- 注意：同一个 th:with 里后面的变量引用不到前面的（Halo 的 SpringEL 下 chapterNo 为 null），所以分两层 -->
+    <div class="z-0 min-w-0" th:with="dotIndex=${#strings.indexOf(category.spec.displayName, '.')}">
+     <th:block th:with="isChapter=${dotIndex gt 0 and dotIndex le 2}, chapterNo=${#strings.substringBefore(category.spec.displayName, '.')}">
       <!-- kb-theme：章节分类页（分类名形如「1. 不要早死」）——章说明 + 整章连读 + 条目列表 -->
       <section th:if="${isChapter}" class="kb-chapter">
         <h1 class="kb-chapter-title" th:text="${category.spec.displayName}"></h1>
@@ -41,7 +40,7 @@
         </li>
       </ol>
 
-      <th:block th:unless="${isChapter}" th:replace="~{modules/category-filter}" />
+      <th:block th:unless="${isChapter}"><th:block th:replace="~{modules/category-filter}" /></th:block>
 
       <div
         id="post-list"
@@ -64,6 +63,7 @@
       <th:block
         th:replace="~{modules/pagination :: pagination(context = |${category.status.permalink}/|, prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
       />
+     </th:block>
     </div>
     <th:block th:replace="~{modules/sidebar :: sidebar(prepend = null)}" />
   </section>
