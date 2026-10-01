@@ -36,7 +36,7 @@
               <span
                 class="kb-nav-desc"
                 th:unless="${#strings.isEmpty(category.spec.description)}"
-                th:text="${#strings.abbreviate(category.spec.description, 60)}"
+                th:text="${#strings.abbreviate(category.spec.description, 96)}"
               ></span>
               <span class="kb-nav-children" th:if="${not #lists.isEmpty(category.children)}">
                 <span th:each="child : ${category.children}" class="kb-nav-child" th:text="${child.spec.displayName}"></span>
