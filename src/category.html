@@ -6,12 +6,46 @@
     <th:block th:replace="~{modules/hero :: hero(isHome = true, cover = null, title = null)}" />
   </template>
   <section class="mx-auto mt-6 grid max-w-7xl grid-cols-1 gap-6 px-4 md:grid-cols-[1fr_18rem] lg:px-6">
-    <div class="z-0 min-w-0">
-      <th:block th:replace="~{modules/category-filter}" />
+    <div
+      class="z-0 min-w-0"
+      th:with="chapterNo=${#strings.substringBefore(category.spec.displayName, '.')}, isChapter=${not #strings.equals(chapterNo, category.spec.displayName) and #strings.length(chapterNo) gt 0 and #strings.length(chapterNo) le 2}"
+    >
+      <!-- kb-theme：章节分类页（分类名形如「1. 不要早死」）——章说明 + 整章连读 + 条目列表 -->
+      <section th:if="${isChapter}" class="kb-chapter">
+        <h1 class="kb-chapter-title" th:text="${category.spec.displayName}"></h1>
+        <p class="kb-chapter-desc" th:unless="${#strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></p>
+        <div class="kb-chapter-meta">
+          <span th:text="|${posts.total} 条建议|"></span>
+          <a
+            class="kb-chapter-full"
+            th:href="|/archives/how-to-live-better-${#strings.length(chapterNo) == 1 ? '0' + chapterNo : chapterNo}|"
+            >整章连读 →</a
+          >
+        </div>
+      </section>
+      <ol th:if="${isChapter and posts.total gt 0}" class="kb-entry-list">
+        <li th:each="post : ${posts.items}" class="kb-entry-item">
+          <a th:href="@{${post.status.permalink}}" class="kb-entry-link">
+            <span class="kb-entry-item-title" th:text="${post.spec.title}"></span>
+            <span class="kb-entry-item-excerpt" th:text="${post.status.excerpt}"></span>
+          </a>
+          <th:block th:each="tag : ${post.tags}">
+            <span
+              th:if="${#strings.startsWith(tag.spec.displayName, '证据等级')}"
+              class="kb-evidence"
+              th:classappend="'kb-evidence-' + ${#strings.toLowerCase(#strings.trim(#strings.substringAfter(tag.spec.displayName, '证据等级')))}"
+              th:text="${#strings.trim(#strings.substringAfter(tag.spec.displayName, '证据等级'))}"
+              title="证据等级"
+            ></span>
+          </th:block>
+        </li>
+      </ol>
+
+      <th:block th:unless="${isChapter}" th:replace="~{modules/category-filter}" />
 
       <div
         id="post-list"
-        th:if="${posts.total gt 0}"
+        th:if="${not isChapter and posts.total gt 0}"
         th:with="postItems=${posts.items},list_layout=${theme.config.layout.post_list_layout}"
         class="mt-6 grid grid-cols-1 gap-6"
         th:classappend="|${list_layout == 'grid_3' ? 'md:grid-cols-2 xl:grid-cols-3' : ''} ${list_layout == 'grid_2' ? 'md:grid-cols-2' : ''}|"
