@@ -20,6 +20,15 @@ spec:
           name: home_category_nav_subtitle
           label: 分类导航副标题
           value: 每条建议都标了成本、收益、证据等级，并给出来源
+        - $formkit: text
+          name: home_extra_category
+          label: 首页附加展示的分类（metadata.name）
+          value: ""
+          help: "导航开启时首页不再列文章流；这里填一个分类的 metadata.name（后台分类列表 URL 里的 id），其下文章会以卡片列在导航下方，比如附录。留空则不显示"
+        - $formkit: text
+          name: home_extra_title
+          label: 附加分类区标题
+          value: 附录
         - $formkit: select
           name: post_list_layout
           label: 文章列表布局

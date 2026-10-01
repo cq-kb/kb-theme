@@ -10,7 +10,6 @@
 - `src/assets/kb/entries.ts` + `src/assets/styles/kb.scss`：条目卡片 / 单条模式 / 纠错按钮（读 `window.kbConfig`，由 `partials/layout.html` 从主题设置注入）
 - `src/index.html` 顶部的 `kb-nav` 段 + `styles/kb-nav.scss`（经 main.ts 引入）：首页分类导航
 - `src/category.html`：分类名形如「N. xxx」时按章节页渲染（章说明 + 整章连读 + 条目列表，证据等级来自标签「证据等级 X」）；其他分类仍是 Earth 卡片流。整章链接按约定指向 `/archives/how-to-live-better-NN`
-- 浏览路径：首页卡片 → 章节页（该章全部条目）→ 单条页；章节页要一页列完需后台「文章设置 → 列表显示条数」≥ 50
 - 以上是**本仓库新增的全部知识库逻辑**，其余都是 Earth 原样
 - `src/assets/post.ts`：文章页入口，引入了上面两个文件
 - `src/post.html` / `src/index.html` 的 head 里多了 og:/twitter: 分享 meta（本仓库新增，其余是 Earth 原样）

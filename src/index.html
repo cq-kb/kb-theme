@@ -44,13 +44,24 @@
             </a>
           </div>
         </section>
-        <h2 class="kb-latest-title">最新</h2>
+        <!-- 导航开启时，首页不再列单条文章流；可选再列一个分类（比如「附录」）的文章 -->
+        <th:block th:unless="${#strings.isEmpty(theme.config.layout.home_extra_category)}"
+          th:with="extra = ${postFinder.listByCategory(1, 12, theme.config.layout.home_extra_category)}">
+          <section th:if="${extra.total gt 0}" class="kb-extra">
+            <h2 class="kb-latest-title" th:text="${theme.config.layout.home_extra_title}">附录</h2>
+            <div class="mt-2 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <th:block th:each="post : ${extra.items}">
+                <th:block th:replace="~{modules/post-card :: post-card(${post},true,true,true,'row')}" />
+              </th:block>
+            </div>
+          </section>
+        </th:block>
       </th:block>
-      <th:block th:replace="~{modules/category-filter}" />
+      <th:block th:unless="${theme.config.layout.home_category_nav}"><th:block th:replace="~{modules/category-filter}" /></th:block>
 
       <div
         id="post-list"
-        th:if="${posts.total gt 0}"
+        th:if="${posts.total gt 0 and not theme.config.layout.home_category_nav}"
         th:with="postItems=${posts.items},list_layout=${theme.config.layout.post_list_layout}"
         class="mt-6 grid grid-cols-1 gap-6"
         th:classappend="|${list_layout == 'grid_3' ? 'md:grid-cols-2 xl:grid-cols-3' : ''} ${list_layout == 'grid_2' ? 'md:grid-cols-2' : ''}|"
@@ -66,9 +77,11 @@
         <span class="text-sm font-light text-gray-600" th:text="#{common.noPosts}"></span>
       </div>
 
-      <th:block
-        th:replace="~{modules/pagination :: pagination(context = '/', prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
-      />
+      <th:block th:unless="${theme.config.layout.home_category_nav}">
+        <th:block
+          th:replace="~{modules/pagination :: pagination(context = '/', prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
+        />
+      </th:block>
     </div>
     <th:block th:replace="~{modules/sidebar :: sidebar(prepend = null)}" />
   </section>

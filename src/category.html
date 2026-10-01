@@ -15,11 +15,6 @@
         <p class="kb-chapter-desc" th:unless="${#strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></p>
         <div class="kb-chapter-meta">
           <span th:text="|${posts.total} 条建议|"></span>
-          <a
-            class="kb-chapter-full"
-            th:href="|/archives/how-to-live-better-${#strings.length(chapterNo) == 1 ? '0' + chapterNo : chapterNo}|"
-            >整章连读 →</a
-          >
         </div>
       </section>
       <ol th:if="${isChapter and posts.total gt 0}" class="kb-entry-list">

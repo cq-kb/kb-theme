@@ -1,7 +1,9 @@
+<!-- kb-theme：slug 形如 hltb-NN-MM 的单条建议用精简卡片（isEntry），整章 / 附录 / 普通文章保持 Earth 原样 -->
 <div
   th:fragment="post-card(post,cover,animation,border,direction)"
+  th:with="isEntry=${#strings.startsWith(post.spec.slug, 'hltb-') and not #strings.startsWith(post.spec.slug, 'hltb-appendix')}"
   class="group flex flex-col overflow-hidden rounded-xl bg-white shadow-md ring-black transition-all duration-500 hover:shadow-lg dark:bg-slate-800 dark:ring-slate-700"
-  th:classappend="${animation  ? 'hover:-translate-y-1' : ''} + ' ' + ${border ? 'hover:ring-2' : ''} + ' ' + ${direction == 'column' ? '!grid grid-cols-1 sm:grid-cols-5' : ''}"
+  th:classappend="${animation  ? 'hover:-translate-y-1' : ''} + ' ' + ${border ? 'hover:ring-2' : ''} + ' ' + ${direction == 'column' ? '!grid grid-cols-1 sm:grid-cols-5' : ''} + ' ' + ${isEntry ? 'kb-card-entry' : ''}"
 >
   <div
     th:if="${cover} and ${not #strings.isEmpty(post.spec.cover)}"
@@ -42,28 +44,40 @@
           class="mr-1 text-sm font-medium text-gray-800 hover:text-gray-900 dark:text-slate-500 dark:hover:text-slate-600"
         >
         </a>
-        <a
-          th:each="tag : ${post.tags}"
-          th:href="@{${tag.status.permalink}}"
-          th:title="${tag.spec.displayName}"
-          th:text="|#${tag.spec.displayName}|"
-          class="cursor-pointer text-sm italic text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-500"
-        >
-        </a>
+        <th:block th:unless="${isEntry}">
+          <a
+            th:each="tag : ${post.tags}"
+            th:href="@{${tag.status.permalink}}"
+            th:title="${tag.spec.displayName}"
+            th:text="|#${tag.spec.displayName}|"
+            class="cursor-pointer text-sm italic text-gray-600 hover:text-gray-900 dark:text-slate-400 dark:hover:text-slate-500"
+          >
+          </a>
+        </th:block>
+        <th:block th:if="${isEntry}" th:each="tag : ${post.tags}">
+          <a
+            th:if="${#strings.startsWith(tag.spec.displayName, '证据等级')}"
+            th:href="@{${tag.status.permalink}}"
+            class="kb-evidence kb-card-evidence"
+            th:classappend="'kb-evidence-' + ${#strings.toLowerCase(#strings.trim(#strings.substringAfter(tag.spec.displayName, '证据等级')))}"
+            th:text="${#strings.trim(#strings.substringAfter(tag.spec.displayName, '证据等级'))}"
+            th:title="${tag.spec.displayName}"
+          ></a>
+        </th:block>
       </div>
       <h1
         class="line-clamp-2 cursor-pointer text-2xl font-medium transition-all hover:text-gray-500 hover:underline dark:text-slate-50 dark:hover:text-white"
-        th:classappend="|${direction == 'column' ? 'sm:line-clamp-2' : ''} ${list_layout == 'grid_2' ? 'sm:line-clamp-3' : ''} ${list_layout == 'grid_3' ? 'sm:line-clamp-4' : ''}|"
+        th:classappend="${isEntry} ? 'kb-card-title' : |${direction == 'column' ? 'sm:line-clamp-2' : ''} ${list_layout == 'grid_2' ? 'sm:line-clamp-3' : ''} ${list_layout == 'grid_3' ? 'sm:line-clamp-4' : ''}|"
       >
         <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}" th:title="${post.spec.title}"></a>
       </h1>
       <p
         class="font-sm line-clamp-2 font-light dark:text-slate-200"
         th:text="${post.status.excerpt}"
-        th:classappend="${list_layout == 'grid_3' ? 'sm:line-clamp-3' : ''}"
+        th:classappend="${isEntry} ? 'kb-card-excerpt' : ${list_layout == 'grid_3' ? 'sm:line-clamp-3' : ''}"
       ></p>
     </div>
-    <div class="mt-4 flex items-center justify-start gap-2">
+    <div class="mt-4 flex items-center justify-start gap-2" th:unless="${isEntry}">
       <a th:href="@{${post.owner.permalink}}" th:title="${post.owner.displayName}">
         <img
           th:src="${post.owner.avatar ?: #theme.assets('/images/default-avatar.svg')}"

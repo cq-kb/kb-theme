@@ -161,6 +161,13 @@
           th:classappend="${theme.config.post.content_style == 'github' ? 'markdown-body' : 'tailwind-typography'}"
           th:utext="${post.content.content}"
         ></article>
+        <!-- kb-theme：单条建议页末尾，回到所在章（分类页）-->
+        <nav
+          th:if="${#strings.startsWith(post.spec.slug, 'hltb-') and not #strings.startsWith(post.spec.slug, 'hltb-appendix') and not #lists.isEmpty(post.categories)}"
+          class="kb-entry-nav"
+        >
+          <a th:href="@{${post.categories[0].status.permalink}}" th:text="|← ${post.categories[0].spec.displayName}：本章全部条目|"></a>
+        </nav>
         <div
           class="mt-10 flex flex-col sm:flex-row sm:justify-between"
           th:with="postCursor = ${postFinder.cursor(post.metadata.name)}"
