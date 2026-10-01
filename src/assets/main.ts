@@ -1,5 +1,6 @@
 import "./styles/tailwind.css";
 import "./styles/main.scss";
+import "./styles/kb-nav.scss";
 import Alpine from "alpinejs";
 
 import colorSchemeSwitcher from "./alpine-data/color-scheme-switcher";

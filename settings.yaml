@@ -7,6 +7,19 @@ spec:
     - group: layout
       label: 布局
       formSchema:
+        - $formkit: checkbox
+          name: home_category_nav
+          label: 首页显示分类导航
+          value: true
+          help: "知识库模式：首页先按分类（章）导航，再列最新文章"
+        - $formkit: text
+          name: home_category_nav_title
+          label: 分类导航标题
+          value: 按场景找建议
+        - $formkit: text
+          name: home_category_nav_subtitle
+          label: 分类导航副标题
+          value: 每条建议都标了成本、收益、证据等级，并给出来源
         - $formkit: select
           name: post_list_layout
           label: 文章列表布局
@@ -488,6 +501,22 @@ spec:
         - $formkit: text
           name: gongan_text
           label: 公安联网备案号
+    - group: feedback
+      label: 纠错反馈
+      formSchema:
+        - $formkit: checkbox
+          name: enabled
+          label: 条目下显示「这条有问题」按钮
+          value: true
+        - $formkit: text
+          name: issue_url
+          label: 反馈链接模板
+          value: https://github.com/cq-kb/kb-content/issues/new?title={title}&body={body}
+          help: "{title} 会替换成条目标题，{body} 会替换成条目链接；也可以填任意表单地址"
+        - $formkit: text
+          name: button_text
+          label: 按钮文字
+          value: 这条有问题？告诉我
     - group: plugin
       label: 插件集成
       formSchema:

@@ -7,7 +7,9 @@
 
 - `src/*.html`：页面模板（Thymeleaf），构建后输出到 `templates/`（gitignore）
 - `src/modules/`、`src/partials/`：可复用模块 / 布局
-- `src/assets/kb/entries.ts` + `src/assets/styles/kb.scss`：**本仓库新增的全部知识库逻辑**，其余都是 Earth 原样
+- `src/assets/kb/entries.ts` + `src/assets/styles/kb.scss`：条目卡片 / 单条模式 / 纠错按钮（读 `window.kbConfig`，由 `partials/layout.html` 从主题设置注入）
+- `src/index.html` 顶部的 `kb-nav` 段 + `styles/kb-nav.scss`（经 main.ts 引入）：首页分类导航
+- 以上是**本仓库新增的全部知识库逻辑**，其余都是 Earth 原样
 - `src/assets/post.ts`：文章页入口，引入了上面两个文件
 - `src/post.html` / `src/index.html` 的 head 里多了 og:/twitter: 分享 meta（本仓库新增，其余是 Earth 原样）
 - `theme.yaml`：主题名 `kb-theme`，设置项名 `kb-theme-setting`；`settings.yaml` 里的资源路径已改为 `/themes/kb-theme/...`
@@ -44,7 +46,7 @@ Secrets 在组织 `cq-kb` 级别。本地预览：`kb-deploy/dev/docker-compose.
 
 ## 下一步（按优先级）
 
-1. 首页改成知识库导航：分类为主、最新文章为辅（改 `src/index.html`）
+1. ~~首页改成知识库导航~~ 已做；下一步是分类页的章节简介（分类描述在后台填）
 2. 分类页汇总条：条目数、证据等级/成本分布（改 `src/category.html`，数据从文章列表统计）
 3. 列表里 VIP 文章加锁标识（配合会员插件的可见性字段）
 4. 页脚备案号：后台填 `icp_text` 即可，无需改代码

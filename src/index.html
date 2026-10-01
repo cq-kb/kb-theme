@@ -15,6 +15,37 @@
 
   <section class="mx-auto mt-6 grid max-w-7xl grid-cols-1 gap-6 px-4 md:grid-cols-[1fr_18rem] lg:px-6">
     <div class="z-0 min-w-0">
+      <!-- kb-theme：首页分类导航（按场景找建议），可在主题设置 → 布局 关闭 -->
+      <th:block th:if="${theme.config.layout.home_category_nav}" th:with="categories = ${categoryFinder.listAsTree()}">
+        <section th:if="${not #lists.isEmpty(categories)}" class="kb-nav">
+          <header class="kb-nav-head">
+            <h2 class="kb-nav-title" th:text="${theme.config.layout.home_category_nav_title}">按场景找建议</h2>
+            <p class="kb-nav-sub" th:text="${theme.config.layout.home_category_nav_subtitle}">
+              每条建议都标了成本、收益、证据等级，并给出来源
+            </p>
+          </header>
+          <div class="kb-nav-grid">
+            <a
+              th:each="category : ${categories}"
+              th:href="@{${category.status.permalink}}"
+              class="kb-nav-card"
+              th:classappend="${not #lists.isEmpty(category.children)} ? 'kb-nav-card-group' : ''"
+            >
+              <span class="kb-nav-name" th:text="${category.spec.displayName}"></span>
+              <span class="kb-nav-count" th:text="|${category.postCount ?: 0} 条|"></span>
+              <span
+                class="kb-nav-desc"
+                th:unless="${#strings.isEmpty(category.spec.description)}"
+                th:text="${#strings.abbreviate(category.spec.description, 60)}"
+              ></span>
+              <span class="kb-nav-children" th:if="${not #lists.isEmpty(category.children)}">
+                <span th:each="child : ${category.children}" class="kb-nav-child" th:text="${child.spec.displayName}"></span>
+              </span>
+            </a>
+          </div>
+        </section>
+        <h2 class="kb-latest-title">最新</h2>
+      </th:block>
       <th:block th:replace="~{modules/category-filter}" />
 
       <div

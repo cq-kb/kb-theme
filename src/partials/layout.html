@@ -4,6 +4,14 @@
     <include src="base-head.html" />
 
     <slot name="head" />
+    <!-- kb-theme：把主题设置暴露给 entries.ts -->
+    <script th:inline="javascript">
+      window.kbConfig = {
+        feedbackEnabled: /*[[${theme.config.feedback.enabled}]]*/ true,
+        feedbackUrl: /*[[${theme.config.feedback.issue_url}]]*/ "",
+        feedbackText: /*[[${theme.config.feedback.button_text}]]*/ "这条有问题？告诉我",
+      };
+    </script>
   </head>
   <body class="hidden bg-slate-50 dark:bg-slate-900">
     <include src="header.html" />

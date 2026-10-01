@@ -169,3 +169,19 @@
 .kb-plain-only .kb-fields > li:not(.kb-field-plain) {
   display: none;
 }
+
+/* ---- 纠错按钮 ---- */
+.kb-feedback {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-decoration: none;
+  border-bottom: 1px dashed currentColor;
+  &:hover {
+    color: #2f855a;
+  }
+}
+.kb-entry-single {
+  margin-top: 0;
+}

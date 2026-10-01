@@ -111,7 +111,68 @@ function fieldSlug(label: string): string {
   );
 }
 
+declare global {
+  interface Window {
+    kbConfig?: { feedbackEnabled?: boolean; feedbackUrl?: string; feedbackText?: string };
+  }
+}
+
+const DEFAULT_FEEDBACK_URL = "https://github.com/cq-kb/kb-content/issues/new?title={title}&body={body}";
+
+/** 条目底部的「这条有问题」按钮：链接模板里的 {title}/{body} 用条目标题和当前链接替换 */
+function appendFeedback(section: HTMLElement, title: string) {
+  const cfg = window.kbConfig ?? {};
+  if (cfg.feedbackEnabled === false) return;
+  const tpl = cfg.feedbackUrl || DEFAULT_FEEDBACK_URL;
+  const pageUrl = typeof location !== "undefined" ? location.href.split("#")[0] : "";
+  const url = section.dataset.single === "1" ? pageUrl : `${pageUrl}#${section.id}`;
+  const body = `条目：${title}\n链接：${url}\n\n我认为有问题的地方：\n`;
+  const href = tpl
+    .replace("{title}", encodeURIComponent(`[纠错] ${title}`))
+    .replace("{body}", encodeURIComponent(body));
+  const a = document.createElement("a");
+  a.className = "kb-feedback";
+  a.href = href;
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.textContent = cfg.feedbackText || "这条有问题？告诉我";
+  section.appendChild(a);
+}
+
+/**
+ * 单条模式：文章本身就是一条建议（正文直接以「成本标签」开头，没有 h2）。
+ * 标题由页面标题承担，这里只把正文包成一个 kb-entry。
+ */
+function enhanceSingleEntry(container: HTMLElement): boolean {
+  const first = Array.from(container.children).find((n) => n.tagName !== "SCRIPT") as HTMLElement | undefined;
+  if (!first || first.tagName !== "P" || !/^成本标签[：:]/.test(first.textContent?.trim() ?? "")) return false;
+  const list = first.nextElementSibling as HTMLElement | null;
+  if (!list || list.tagName !== "UL") return false;
+
+  const section = document.createElement("section");
+  section.className = "kb-entry kb-entry-single";
+  section.id = "kb-entry-1";
+  section.dataset.single = "1";
+  container.insertBefore(section, first);
+  section.append(first, list);
+
+  const raw = (first.textContent ?? "").replace(/^成本标签[：:]\s*/, "");
+  const tags = parseCostTags(raw);
+  if (tags.length) {
+    first.replaceWith(renderCostTags(tags));
+    for (const t of tags) section.dataset[`tag${t.key}`] = t.value;
+  }
+  list.classList.add("kb-fields");
+  const evidence = enhanceListItems(list);
+  if (evidence) section.dataset.evidence = evidence;
+
+  const title = document.querySelector("h1")?.textContent?.trim() || document.title;
+  appendFeedback(section, title);
+  return true;
+}
+
 export function enhanceEntries(container: HTMLElement) {
+  if (enhanceSingleEntry(container)) return;
   const headings = Array.from(container.querySelectorAll<HTMLElement>("h2"));
   if (!headings.length) return;
 
@@ -157,6 +218,7 @@ export function enhanceEntries(container: HTMLElement) {
       const evidence = enhanceListItems(list);
       if (evidence) section.dataset.evidence = evidence;
     }
+    appendFeedback(section, (h2.textContent ?? "").trim().replace(/^\d+\.\s*/, ""));
     entries.push(section);
   }
 
