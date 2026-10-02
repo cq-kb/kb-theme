@@ -254,3 +254,10 @@
 .kb-extra {
   margin-top: 2rem;
 }
+
+/* 单条页底部「上一条 / 下一条」小标签 */
+.kb-entry-nav-label {
+  flex: none;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}

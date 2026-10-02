@@ -168,38 +168,51 @@
         >
           <a th:href="@{${post.categories[0].status.permalink}}" th:text="|← ${post.categories[0].spec.displayName}：本章全部条目|"></a>
         </nav>
+        <!-- 条目（hltb-NN-MM）的日期是倒序排的，所以 Halo 的 previous（更早）= 编号更大 = 下一条；next（更新）= 编号更小 = 上一条。
+             这里对条目把左右对调，并且只在同一章内翻页；非条目文章保持 Earth 原逻辑。 -->
         <div
           class="mt-10 flex flex-col sm:flex-row sm:justify-between"
           th:with="postCursor = ${postFinder.cursor(post.metadata.name)}"
         >
+          <th:block th:with="isEntry=${#strings.startsWith(post.spec.slug, 'hltb-') and not #strings.startsWith(post.spec.slug, 'hltb-appendix')}">
+          <th:block th:with="cat=${#lists.isEmpty(post.spec.categories) ? '' : post.spec.categories[0]},
+                             leftPost=${isEntry ? (postCursor.hasNext() ? postCursor.next : null) : (postCursor.hasPrevious() ? postCursor.previous : null)},
+                             rightPost=${isEntry ? (postCursor.hasPrevious() ? postCursor.previous : null) : (postCursor.hasNext() ? postCursor.next : null)}">
+          <th:block th:with="leftOk=${leftPost != null and (not isEntry or (not #lists.isEmpty(leftPost.spec.categories) and leftPost.spec.categories[0] == cat))},
+                             rightOk=${rightPost != null and (not isEntry or (not #lists.isEmpty(rightPost.spec.categories) and rightPost.spec.categories[0] == cat))}">
           <div class="flex justify-start">
             <a
-              th:if="${postCursor.hasPrevious()}"
+              th:if="${leftOk}"
               role="navigation"
               class="group inline-flex items-center gap-2 truncate text-sm text-gray-600 hover:text-gray-900 dark:text-slate-100 dark:hover:text-slate-200"
-              th:href="@{${postCursor.previous.status.permalink}}"
-              th:title="${postCursor.previous.spec.title}"
+              th:href="@{${leftPost.status.permalink}}"
+              th:title="${leftPost.spec.title}"
             >
               <span
                 class="i-tabler-chevron-left translate-x-1 text-lg transition-all group-hover:-translate-x-0"
               ></span>
-              <span th:text="${#strings.abbreviate(postCursor.previous.spec.title,20)}"></span>
+              <span th:if="${isEntry}" class="kb-entry-nav-label">上一条</span>
+              <span th:text="${#strings.abbreviate(leftPost.spec.title,20)}"></span>
             </a>
           </div>
           <div class="flex justify-end">
             <a
-              th:if="${postCursor.hasNext()}"
+              th:if="${rightOk}"
               role="navigation"
               class="group inline-flex items-center gap-2 truncate text-sm text-gray-600 hover:text-gray-900 dark:text-slate-100 dark:hover:text-slate-200"
-              th:href="@{${postCursor.next.status.permalink}}"
-              th:title="${postCursor.next.spec.title}"
+              th:href="@{${rightPost.status.permalink}}"
+              th:title="${rightPost.spec.title}"
             >
-              <span th:text="${#strings.abbreviate(postCursor.next.spec.title,20)}"></span>
+              <span th:text="${#strings.abbreviate(rightPost.spec.title,20)}"></span>
+              <span th:if="${isEntry}" class="kb-entry-nav-label">下一条</span>
               <span
                 class="i-tabler-chevron-right -translate-x-1 text-lg transition-all group-hover:translate-x-0"
               ></span>
             </a>
           </div>
+          </th:block>
+          </th:block>
+          </th:block>
         </div>
         <hr th:if="${haloCommentEnabled}" class="my-10 dark:border-slate-700" />
         <div id="comment" th:if="${haloCommentEnabled}">
